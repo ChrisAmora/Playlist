@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/betopompolo/project_playlist_server/lasanha"
 	"github.com/gocql/gocql"
 	"github.com/gorilla/mux"
 )
@@ -85,6 +86,8 @@ func getPosts(w http.ResponseWriter, r *http.Request) {
 func main() {
 	emp1 := Emp{"E-1", "Betinho", "Nasus", 20}
 	emp2 := Emp{"E-2", "Bati", "Nabewata", 30}
+	si := lasanha.Calculate(5000.0, 10.0, 1.0)
+	fmt.Println("Simple interest is", si)
 	createEmp(emp1)
 	fmt.Println(getEmps())
 	createEmp(emp2)
