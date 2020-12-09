@@ -3,8 +3,8 @@ package domain
 import "time"
 
 type Music struct {
-	ID        int64     `json:"id"`
-	Title     string    `json:"title"`
-	UpdatedAt time.Time `json:"updated_at"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        int64     `db:"id"`
+	Title     string    `db:"title"`
+	UpdatedAt time.Time `db:"updated_at"`
+	CreatedAt time.Time `db:"created_at"`
 }

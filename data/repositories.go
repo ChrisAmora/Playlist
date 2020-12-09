@@ -9,6 +9,7 @@ import (
 type MusicRepository interface {
 	GetById(c context.Context, id int64) (domain.Music, error)
 	Add(c context.Context, id int64) (domain.Music, error)
+	GetAll(c context.Context) ([]domain.Music, error)
 }
 
 type musicUsecase struct {
@@ -27,4 +28,8 @@ func (mu *musicUsecase) Add(c context.Context, id int64) (domain.Music, error) {
 
 func (mu *musicUsecase) GetById(c context.Context, id int64) (domain.Music, error) {
 	return mu.MusicRepository.GetById(c, id)
+}
+
+func (mu *musicUsecase) GetAllMusics(c context.Context) ([]domain.Music, error) {
+	return mu.MusicRepository.GetAll(c)
 }
