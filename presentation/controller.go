@@ -5,22 +5,23 @@ import (
 	"net/http"
 
 	"github.com/betopompolo/project_playlist_server/domain"
-	"github.com/gorilla/mux"
 )
 
-type MusicHandler struct {
+type MusicController interface {
+	FetchMusics(w http.ResponseWriter, r *http.Request)
+}
+
+type musicController struct {
 	domain.MusicUsecase
 }
 
-func NewMusicHandler(r *mux.Router, dm domain.MusicUsecase) {
-	handler := &MusicHandler{
+func NewMusicController(dm domain.MusicUsecase) MusicController {
+	return &musicController{
 		MusicUsecase: dm,
 	}
-	r.HandleFunc("/musics", handler.FetchMusic).Methods("Get")
-
 }
 
-func (mh *MusicHandler) FetchMusic(w http.ResponseWriter, r *http.Request) {
+func (mh *musicController) FetchMusics(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	mh.MusicUsecase.GetAllMusics(ctx)
 	w.Header().Set("Content-Type", "application/json")

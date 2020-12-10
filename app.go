@@ -6,9 +6,8 @@ import (
 
 	"net/http"
 
-	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/infra"
-	"github.com/betopompolo/project_playlist_server/presentation"
+	"github.com/betopompolo/project_playlist_server/registry"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -49,7 +48,6 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) initializeRoutes() {
-	mr := infra.NewMysqlArticleRepository(a.DB)
-	mu := data.NewMusicUsecase(mr)
-	presentation.NewMusicHandler(a.Router, mu)
+	r := registry.NewRegistry(a.DB)
+	infra.NewRouter(a.Router, r.NewAppController())
 }

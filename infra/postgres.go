@@ -14,8 +14,7 @@ type postgresMusicRepository struct {
 	Conn *sqlx.DB
 }
 
-// NewMysqlArticleRepository will create an object that represent the article.Repository interface
-func NewMysqlArticleRepository(Conn *sqlx.DB) data.MusicRepository {
+func NewPostgresMusicRepository(Conn *sqlx.DB) data.MusicRepository {
 	return &postgresMusicRepository{Conn}
 }
 
