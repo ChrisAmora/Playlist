@@ -6,6 +6,11 @@ import (
 
 	"net/http"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/betopompolo/project_playlist_server/app/generated"
+	"github.com/betopompolo/project_playlist_server/app/interfaces"
+	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/registry"
 	"github.com/gorilla/mux"
@@ -40,14 +45,28 @@ func (a *App) Initialize(user string, password string, dbname string) {
 
 	a.Router = mux.NewRouter()
 
-	a.initializeRoutes()
+	a.initializeGraphql()
 }
 
 func (a *App) Run(addr string) {
 	log.Fatal(http.ListenAndServe(":8000", a.Router))
 }
 
+func (a *App) RunGraphql(port string) {
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
 func (a *App) initializeRoutes() {
 	r := registry.NewRegistry(a.DB)
 	infra.NewRouter(a.Router, r.NewAppController())
+}
+
+func (a *App) initializeGraphql() {
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
+		MusicService: data.NewMusicUsecase(infra.NewPostgresMusicRepository(a.DB)),
+	}}))
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
 }

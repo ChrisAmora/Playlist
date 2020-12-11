@@ -1,0 +1,22 @@
+type Music {
+  id: ID!
+  title: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+extend type Mutation {
+  CreateMusic(title: String!): MusicResponse
+}
+
+extend type Query {
+  GetOneMusic(id: ID!): MusicResponse
+  GetAllMusics: MusicResponse
+}
+
+type MusicResponse {
+  message: String!
+  status: Int!
+  data: Music #For single record
+  dataList: [Music] # For array of records.
+}

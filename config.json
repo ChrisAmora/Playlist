@@ -1,7 +1,7 @@
 {
   "debug": true,
   "server": {
-    "address": ":5432"
+    "address": "8080"
   },
   "context": {
     "timeout": 2
