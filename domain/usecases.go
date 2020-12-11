@@ -7,3 +7,7 @@ type MusicUsecase interface {
 	Add(c context.Context, id int64) (Music, error)
 	GetAllMusics(c context.Context) ([]Music, error)
 }
+
+type AuthUsecase interface {
+	Signup(c context.Context, email, password string) (bool, error)
+}

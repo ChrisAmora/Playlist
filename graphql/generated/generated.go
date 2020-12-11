@@ -12,7 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/betopompolo/project_playlist_server/app/models"
+	"github.com/betopompolo/project_playlist_server/graphql/models"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -241,7 +241,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "app/schema/music.graphql", Input: `type Music {
+	{Name: "graphql/schema/music.graphql", Input: `type Music {
   id: ID!
   title: String!
   createdAt: Time!
@@ -264,7 +264,7 @@ type MusicResponse {
   dataList: [Music] # For array of records.
 }
 `, BuiltIn: false},
-	{Name: "app/schema/schema.graphql", Input: `# Custom schema
+	{Name: "graphql/schema/schema.graphql", Input: `# Custom schema
 
 scalar Time
 `, BuiltIn: false},
@@ -597,7 +597,7 @@ func (ec *executionContext) _MusicResponse_data(ctx context.Context, field graph
 	}
 	res := resTmp.(*models.Music)
 	fc.Result = res
-	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusic(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MusicResponse_dataList(ctx context.Context, field graphql.CollectedField, obj *models.MusicResponse) (ret graphql.Marshaler) {
@@ -629,7 +629,7 @@ func (ec *executionContext) _MusicResponse_dataList(ctx context.Context, field g
 	}
 	res := resTmp.([]*models.Music)
 	fc.Result = res
-	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusic(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_CreateMusic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -668,7 +668,7 @@ func (ec *executionContext) _Mutation_CreateMusic(ctx context.Context, field gra
 	}
 	res := resTmp.(*models.MusicResponse)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -707,7 +707,7 @@ func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphq
 	}
 	res := resTmp.(*models.MusicResponse)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -739,7 +739,7 @@ func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graph
 	}
 	res := resTmp.(*models.MusicResponse)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2639,7 +2639,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v []*models.Music) graphql.Marshaler {
+func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v []*models.Music) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -2666,7 +2666,7 @@ func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋpro
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusic(ctx, sel, v[i])
+			ret[i] = ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2679,14 +2679,14 @@ func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋpro
 	return ret
 }
 
-func (ec *executionContext) marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v *models.Music) graphql.Marshaler {
+func (ec *executionContext) marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v *models.Music) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Music(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋappᚋmodelsᚐMusicResponse(ctx context.Context, sel ast.SelectionSet, v *models.MusicResponse) graphql.Marshaler {
+func (ec *executionContext) marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx context.Context, sel ast.SelectionSet, v *models.MusicResponse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

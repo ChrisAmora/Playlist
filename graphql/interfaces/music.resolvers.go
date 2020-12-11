@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/betopompolo/project_playlist_server/app/generated"
-	"github.com/betopompolo/project_playlist_server/app/models"
+	"github.com/betopompolo/project_playlist_server/graphql/generated"
+	"github.com/betopompolo/project_playlist_server/graphql/models"
 )
 
 func (r *mutationResolver) CreateMusic(ctx context.Context, title string) (*models.MusicResponse, error) {

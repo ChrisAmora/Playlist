@@ -7,15 +7,27 @@ import (
 
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
 )
 
 type postgresMusicRepository struct {
-	Conn *sqlx.DB
+	Conn *gorm.DB
 }
 
-func NewPostgresMusicRepository(Conn *sqlx.DB) data.MusicRepository {
+type postgresAuthRepository struct {
+	Conn *gorm.DB
+}
+
+func NewPostgresMusicRepository(Conn *gorm.DB) data.MusicRepository {
 	return &postgresMusicRepository{Conn}
+}
+
+func NewPostgresAuthRepository(Conn *gorm.DB) data.AuthRepository {
+	return &postgresAuthRepository{Conn}
+}
+
+func (ar *postgresAuthRepository) Signup(c context.Context, email, password string) (data.Auth, error) {
+	return data.Auth{}, errors.New("")
 }
 
 func (pm *postgresMusicRepository) Add(c context.Context, id int64) (domain.Music, error) {
@@ -27,11 +39,11 @@ func (pm *postgresMusicRepository) GetById(c context.Context, id int64) (domain.
 }
 
 func (pm *postgresMusicRepository) GetAll(c context.Context) ([]domain.Music, error) {
-	musics := []domain.Music{}
-	err := pm.Conn.Select(&musics, "SELECT * FROM music")
+	musics := []data.Music{}
+	err := pm.Conn.Find(&musics)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(musics)
-	return musics, nil
+	return []domain.Music{}, nil
 }
