@@ -14,22 +14,13 @@ import (
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/registry"
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
 
-var schema = `
-CREATE TABLE IF NOT EXISTS music (
-	id SERIAL NOT NULL PRIMARY KEY,
-	title text,
-	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-`
-
 type App struct {
 	Router *mux.Router
-	DB     *sqlx.DB
+	DB     *gorm.DB
 }
 
 func (a *App) Initialize(user string, password string, dbname string) {
@@ -37,11 +28,14 @@ func (a *App) Initialize(user string, password string, dbname string) {
 		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
 
 	var err error
-	a.DB, err = sqlx.Connect("postgres", connectionString)
+	a.DB, err = gorm.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
-	a.DB.MustExec(schema)
+
+	if err := Automigrate(a.DB); err != nil {
+		panic(err)
+	}
 
 	a.Router = mux.NewRouter()
 
@@ -69,4 +63,8 @@ func (a *App) initializeGraphql() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
+}
+
+func Automigrate(db *gorm.DB) error {
+	return db.AutoMigrate(&data.Music{}).Error
 }

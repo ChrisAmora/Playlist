@@ -5,18 +5,18 @@ import (
 	"github.com/betopompolo/project_playlist_server/domain"
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/presentation"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
 )
 
 type registry struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
 type Registry interface {
 	NewAppController() presentation.AppController
 }
 
-func NewRegistry(db *sqlx.DB) Registry {
+func NewRegistry(db *gorm.DB) Registry {
 	return &registry{db}
 }
 

@@ -7,14 +7,14 @@ import (
 
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
 )
 
 type postgresMusicRepository struct {
-	Conn *sqlx.DB
+	Conn *gorm.DB
 }
 
-func NewPostgresMusicRepository(Conn *sqlx.DB) data.MusicRepository {
+func NewPostgresMusicRepository(Conn *gorm.DB) data.MusicRepository {
 	return &postgresMusicRepository{Conn}
 }
 
