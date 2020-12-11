@@ -14,6 +14,7 @@ type registry struct {
 
 type Registry interface {
 	NewAppController() presentation.AppController
+	NewMusicUseCase() domain.MusicUsecase
 }
 
 func NewRegistry(db *gorm.DB) Registry {
