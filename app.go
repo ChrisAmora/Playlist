@@ -8,9 +8,10 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/betopompolo/project_playlist_server/app/generated"
-	"github.com/betopompolo/project_playlist_server/app/interfaces"
+
 	"github.com/betopompolo/project_playlist_server/data"
+	"github.com/betopompolo/project_playlist_server/graphql/generated"
+	"github.com/betopompolo/project_playlist_server/graphql/interfaces"
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/registry"
 	"github.com/gorilla/mux"
