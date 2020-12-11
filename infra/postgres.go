@@ -27,11 +27,11 @@ func (pm *postgresMusicRepository) GetById(c context.Context, id int64) (domain.
 }
 
 func (pm *postgresMusicRepository) GetAll(c context.Context) ([]domain.Music, error) {
-	musics := []domain.Music{}
-	err := pm.Conn.Select(&musics, "SELECT * FROM music")
+	musics := []data.Music{}
+	err := pm.Conn.Find(&musics)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(musics)
-	return musics, nil
+	return []domain.Music{}, nil
 }

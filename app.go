@@ -37,6 +37,7 @@ func (a *App) Initialize(user string, password string, dbname string) {
 	if err := Automigrate(a.DB); err != nil {
 		panic(err)
 	}
+	a.DB.Create(&data.Music{Title: "lasanha"})
 
 	a.Router = mux.NewRouter()
 
