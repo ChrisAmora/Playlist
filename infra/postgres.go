@@ -14,8 +14,20 @@ type postgresMusicRepository struct {
 	Conn *gorm.DB
 }
 
+type postgresAuthRepository struct {
+	Conn *gorm.DB
+}
+
 func NewPostgresMusicRepository(Conn *gorm.DB) data.MusicRepository {
 	return &postgresMusicRepository{Conn}
+}
+
+func NewPostgresAuthRepository(Conn *gorm.DB) data.AuthRepository {
+	return &postgresAuthRepository{Conn}
+}
+
+func (ar *postgresAuthRepository) Signup(c context.Context, email, password string) (data.Auth, error) {
+	return data.Auth{}, errors.New("")
 }
 
 func (pm *postgresMusicRepository) Add(c context.Context, id int64) (domain.Music, error) {

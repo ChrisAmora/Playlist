@@ -69,5 +69,5 @@ func (a *App) initializeGraphql() {
 }
 
 func Automigrate(db *gorm.DB) error {
-	return db.AutoMigrate(&data.Music{}).Error
+	return db.AutoMigrate(&data.Music{}, &data.Auth{}).Error
 }
