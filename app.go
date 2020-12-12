@@ -62,6 +62,7 @@ func (a *App) initializeGraphql() {
 	r := registry.NewRegistry(a.DB)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicService: r.NewMusicUseCase(),
+		UserService:  r.NewAuthUseCase(),
 	}}))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

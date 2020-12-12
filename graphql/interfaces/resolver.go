@@ -8,4 +8,5 @@ import "github.com/betopompolo/project_playlist_server/domain"
 
 type Resolver struct {
 	MusicService domain.MusicUsecase
+	UserService  domain.AuthUsecase
 }

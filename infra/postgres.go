@@ -26,8 +26,17 @@ func NewPostgresAuthRepository(Conn *gorm.DB) data.AuthRepository {
 	return &postgresAuthRepository{Conn}
 }
 
-func (ar *postgresAuthRepository) Signup(c context.Context, email, password string) (data.Auth, error) {
-	return data.Auth{}, errors.New("")
+func (ar *postgresAuthRepository) GetUser(c context.Context, email string) (data.Auth, error) {
+	auth := &data.Auth{Email: email}
+	db := ar.Conn.Take(auth)
+	return *auth, db.Error
+}
+
+func (ar *postgresAuthRepository) CreateUser(c context.Context, email, password string) (*data.Auth, error) {
+	auth := &data.Auth{Email: email, Password: password}
+	result := ar.Conn.Debug().Create(&auth)
+
+	return auth, result.Error
 }
 
 func (pm *postgresMusicRepository) Add(c context.Context, id int64) (domain.Music, error) {

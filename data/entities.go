@@ -10,8 +10,7 @@ type Music struct {
 }
 
 type Auth struct {
-	ID        int64
-	Email     string
+	Email     string `gorm:"primaryKey"`
 	Password  string
 	UpdatedAt time.Time
 	CreatedAt time.Time

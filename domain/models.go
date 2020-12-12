@@ -9,10 +9,7 @@ type Music struct {
 	CreatedAt time.Time
 }
 
-type Auth struct {
-	ID        int64
-	Email     string
-	Password  string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+type User struct {
+	Email    string
+	Password string
 }
