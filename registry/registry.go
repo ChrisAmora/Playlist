@@ -15,6 +15,7 @@ type registry struct {
 type Registry interface {
 	NewAppController() presentation.AppController
 	NewMusicUseCase() domain.MusicUsecase
+	NewAuthUseCase() domain.AuthUsecase
 }
 
 func NewRegistry(db *gorm.DB) Registry {
@@ -35,6 +36,14 @@ func (r *registry) NewMusicRepository() data.MusicRepository {
 	return infra.NewPostgresMusicRepository(r.db)
 }
 
+func (r *registry) NewAuthRepository() data.AuthRepository {
+	return infra.NewPostgresAuthRepository(r.db)
+}
+
 func (r *registry) NewMusicUseCase() domain.MusicUsecase {
 	return data.NewMusicUsecase(r.NewMusicRepository())
+}
+
+func (r *registry) NewAuthUseCase() domain.AuthUsecase {
+	return data.NewAuthUsecase(r.NewAuthRepository())
 }

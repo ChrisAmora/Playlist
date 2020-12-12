@@ -11,5 +11,6 @@ import (
 
 func (r *mutationResolver) CreateUser(ctx context.Context, name string, password string) (*models.UserResponse, error) {
 	user, err := r.UserService.Signup(ctx, name, password)
+
 	return &models.UserResponse{Message: "efewhfuwe", Status: 900, Data: &models.User{ID: "few", Email: user.Email}}, err
 }
