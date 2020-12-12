@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/betopompolo/project_playlist_server/domain"
 )
@@ -13,7 +14,8 @@ type MusicRepository interface {
 }
 
 type AuthRepository interface {
-	Signup(c context.Context, email, password string) (Auth, error)
+	GetUser(c context.Context, email string) (Auth, error)
+	CreateUser(c context.Context, email, password string) (*Auth, error)
 }
 
 type authUsecase struct {
@@ -36,9 +38,13 @@ func NewAuthUsecase(ar AuthRepository) domain.AuthUsecase {
 	}
 }
 
-func (au *authUsecase) Signup(c context.Context, email, password string) (bool, error) {
-	au.AuthRepository.Signup(c, email, password)
-	return true, nil
+func (au *authUsecase) Signup(c context.Context, email, password string) (domain.User, error) {
+	auth, err := au.AuthRepository.CreateUser(c, email, password)
+	fmt.Println(auth, 93993939)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return domain.User{Email: auth.Email, Password: auth.Password}, nil
 }
 
 func (mu *musicUsecase) Add(c context.Context, id int64) (domain.Music, error) {

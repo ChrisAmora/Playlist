@@ -9,5 +9,5 @@ type MusicUsecase interface {
 }
 
 type AuthUsecase interface {
-	Signup(c context.Context, email, password string) (bool, error)
+	Signup(c context.Context, email, password string) (User, error)
 }
