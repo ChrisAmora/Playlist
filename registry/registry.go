@@ -4,7 +4,7 @@ import (
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
 	"github.com/betopompolo/project_playlist_server/infra"
-	"github.com/betopompolo/project_playlist_server/presentation"
+	"github.com/betopompolo/project_playlist_server/rest"
 	"github.com/jinzhu/gorm"
 )
 
@@ -13,7 +13,7 @@ type registry struct {
 }
 
 type Registry interface {
-	NewAppController() presentation.AppController
+	NewAppController() rest.AppController
 	NewMusicUseCase() domain.MusicUsecase
 	NewAuthUseCase() domain.AuthUsecase
 }
@@ -22,14 +22,14 @@ func NewRegistry(db *gorm.DB) Registry {
 	return &registry{db}
 }
 
-func (r *registry) NewAppController() presentation.AppController {
-	return presentation.AppController{
+func (r *registry) NewAppController() rest.AppController {
+	return rest.AppController{
 		Music: r.NewMusicController(),
 	}
 }
 
-func (r *registry) NewMusicController() presentation.MusicController {
-	return presentation.NewMusicController(r.NewMusicUseCase())
+func (r *registry) NewMusicController() rest.MusicController {
+	return rest.NewMusicController(r.NewMusicUseCase())
 }
 
 func (r *registry) NewMusicRepository() data.MusicRepository {
