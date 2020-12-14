@@ -305,6 +305,8 @@ type MusicResponse {
 	{Name: "graphql/schema/schema.graphql", Input: `# Custom schema
 
 scalar Time
+scalar Map
+scalar Any
 `, BuiltIn: false},
 	{Name: "graphql/schema/user.graphql", Input: `type User {
   email: String!
