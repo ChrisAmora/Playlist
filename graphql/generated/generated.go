@@ -50,13 +50,6 @@ type ComplexityRoot struct {
 		UpdatedAt func(childComplexity int) int
 	}
 
-	MusicResponse struct {
-		Data     func(childComplexity int) int
-		DataList func(childComplexity int) int
-		Message  func(childComplexity int) int
-		Status   func(childComplexity int) int
-	}
-
 	Mutation struct {
 		CreateMusic func(childComplexity int, title string) int
 		CreateUser  func(childComplexity int, name string, password string) int
@@ -73,12 +66,12 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateMusic(ctx context.Context, title string) (*models.MusicResponse, error)
+	CreateMusic(ctx context.Context, title string) (*models.Music, error)
 	CreateUser(ctx context.Context, name string, password string) (*models.User, error)
 }
 type QueryResolver interface {
-	GetOneMusic(ctx context.Context, id string) (*models.MusicResponse, error)
-	GetAllMusics(ctx context.Context) (*models.MusicResponse, error)
+	GetOneMusic(ctx context.Context, id string) (*models.Music, error)
+	GetAllMusics(ctx context.Context) ([]*models.Music, error)
 }
 
 type executableSchema struct {
@@ -123,34 +116,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Music.UpdatedAt(childComplexity), true
-
-	case "MusicResponse.data":
-		if e.complexity.MusicResponse.Data == nil {
-			break
-		}
-
-		return e.complexity.MusicResponse.Data(childComplexity), true
-
-	case "MusicResponse.dataList":
-		if e.complexity.MusicResponse.DataList == nil {
-			break
-		}
-
-		return e.complexity.MusicResponse.DataList(childComplexity), true
-
-	case "MusicResponse.message":
-		if e.complexity.MusicResponse.Message == nil {
-			break
-		}
-
-		return e.complexity.MusicResponse.Message(childComplexity), true
-
-	case "MusicResponse.status":
-		if e.complexity.MusicResponse.Status == nil {
-			break
-		}
-
-		return e.complexity.MusicResponse.Status(childComplexity), true
 
 	case "Mutation.CreateMusic":
 		if e.complexity.Mutation.CreateMusic == nil {
@@ -287,19 +252,12 @@ directive @goField(
 }
 
 extend type Mutation {
-  CreateMusic(title: String!): MusicResponse
+  CreateMusic(title: String!): Music
 }
 
 extend type Query {
-  GetOneMusic(id: ID!): MusicResponse
-  GetAllMusics: MusicResponse
-}
-
-type MusicResponse {
-  message: String!
-  status: Int!
-  data: Music #For single record
-  dataList: [Music] # For array of records.
+  GetOneMusic(id: ID!): Music
+  GetAllMusics: [Music]
 }
 `, BuiltIn: false},
 	{Name: "graphql/schema/schema.graphql", Input: `# Custom schema
@@ -570,140 +528,6 @@ func (ec *executionContext) _Music_updatedAt(ctx context.Context, field graphql.
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MusicResponse_message(ctx context.Context, field graphql.CollectedField, obj *models.MusicResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "MusicResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _MusicResponse_status(ctx context.Context, field graphql.CollectedField, obj *models.MusicResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "MusicResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _MusicResponse_data(ctx context.Context, field graphql.CollectedField, obj *models.MusicResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "MusicResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Data, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.Music)
-	fc.Result = res
-	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _MusicResponse_dataList(ctx context.Context, field graphql.CollectedField, obj *models.MusicResponse) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "MusicResponse",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DataList, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Music)
-	fc.Result = res
-	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Mutation_CreateMusic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -738,9 +562,9 @@ func (ec *executionContext) _Mutation_CreateMusic(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.MusicResponse)
+	res := resTmp.(*models.Music)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_CreateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -816,9 +640,9 @@ func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.MusicResponse)
+	res := resTmp.(*models.Music)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -848,9 +672,9 @@ func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.MusicResponse)
+	res := resTmp.([]*models.Music)
 	fc.Result = res
-	return ec.marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2096,42 +1920,6 @@ func (ec *executionContext) _Music(ctx context.Context, sel ast.SelectionSet, ob
 	return out
 }
 
-var musicResponseImplementors = []string{"MusicResponse"}
-
-func (ec *executionContext) _MusicResponse(ctx context.Context, sel ast.SelectionSet, obj *models.MusicResponse) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, musicResponseImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("MusicResponse")
-		case "message":
-			out.Values[i] = ec._MusicResponse_message(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "status":
-			out.Values[i] = ec._MusicResponse_status(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "data":
-			out.Values[i] = ec._MusicResponse_data(ctx, field, obj)
-		case "dataList":
-			out.Values[i] = ec._MusicResponse_dataList(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -2516,21 +2304,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2859,13 +2632,6 @@ func (ec *executionContext) marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋprojec
 		return graphql.Null
 	}
 	return ec._Music(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOMusicResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusicResponse(ctx context.Context, sel ast.SelectionSet, v *models.MusicResponse) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._MusicResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

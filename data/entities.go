@@ -1,17 +1,16 @@
 package data
 
-import "time"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Music struct {
-	ID        int64
-	Title     string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	gorm.Model
+	Title string
 }
 
 type Auth struct {
-	Email     string `gorm:"primaryKey"`
-	Password  string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	gorm.Model
+	Email    string `gorm:"primaryKey"`
+	Password string
 }

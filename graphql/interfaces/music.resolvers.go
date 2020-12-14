@@ -11,15 +11,15 @@ import (
 	"github.com/betopompolo/project_playlist_server/graphql/models"
 )
 
-func (r *mutationResolver) CreateMusic(ctx context.Context, title string) (*models.MusicResponse, error) {
+func (r *mutationResolver) CreateMusic(ctx context.Context, title string) (*models.Music, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetOneMusic(ctx context.Context, id string) (*models.MusicResponse, error) {
+func (r *queryResolver) GetOneMusic(ctx context.Context, id string) (*models.Music, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetAllMusics(ctx context.Context) (*models.MusicResponse, error) {
+func (r *queryResolver) GetAllMusics(ctx context.Context) ([]*models.Music, error) {
 	r.MusicService.GetAllMusics(ctx)
 	panic(fmt.Errorf("not implemented"))
 }

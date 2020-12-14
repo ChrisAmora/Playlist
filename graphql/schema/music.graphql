@@ -6,17 +6,10 @@ type Music {
 }
 
 extend type Mutation {
-  CreateMusic(title: String!): MusicResponse
+  CreateMusic(title: String!): Music
 }
 
 extend type Query {
-  GetOneMusic(id: ID!): MusicResponse
-  GetAllMusics: MusicResponse
-}
-
-type MusicResponse {
-  message: String!
-  status: Int!
-  data: Music #For single record
-  dataList: [Music] # For array of records.
+  GetOneMusic(id: ID!): Music
+  GetAllMusics: [Music]
 }

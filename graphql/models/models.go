@@ -13,13 +13,6 @@ type Music struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type MusicResponse struct {
-	Message  string   `json:"message"`
-	Status   int      `json:"status"`
-	Data     *Music   `json:"data"`
-	DataList []*Music `json:"dataList"`
-}
-
 type User struct {
 	Email string `json:"email"`
 }
