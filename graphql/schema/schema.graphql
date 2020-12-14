@@ -1,3 +1,5 @@
 # Custom schema
 
 scalar Time
+scalar Map
+scalar Any

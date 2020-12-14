@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/betopompolo/project_playlist_server/domain"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type MusicRepository interface {
@@ -39,8 +39,11 @@ func NewAuthUsecase(ar AuthRepository) domain.AuthUsecase {
 }
 
 func (au *authUsecase) Signup(c context.Context, email, password string) (domain.User, error) {
-	auth, err := au.AuthRepository.CreateUser(c, email, password)
-	fmt.Println(auth, 93993939)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		return domain.User{}, err
+	}
+	auth, err := au.AuthRepository.CreateUser(c, email, string(hash))
 	if err != nil {
 		return domain.User{}, err
 	}

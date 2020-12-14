@@ -1,14 +1,7 @@
 type User {
-  id: ID!
   email: String!
 }
 
 extend type Mutation {
-  CreateUser(name: String!, password: String!): UserResponse
-}
-
-type UserResponse {
-  message: String!
-  status: Int!
-  data: User #For single record
+  CreateUser(name: String!, password: String!): User
 }

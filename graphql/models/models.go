@@ -21,12 +21,5 @@ type MusicResponse struct {
 }
 
 type User struct {
-	ID    string `json:"id"`
 	Email string `json:"email"`
-}
-
-type UserResponse struct {
-	Message string `json:"message"`
-	Status  int    `json:"status"`
-	Data    *User  `json:"data"`
 }
