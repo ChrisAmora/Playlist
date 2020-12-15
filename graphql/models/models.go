@@ -16,3 +16,8 @@ type Music struct {
 type User struct {
 	Email string `json:"email"`
 }
+
+type UserInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

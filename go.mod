@@ -4,6 +4,8 @@ go 1.15
 
 require (
 	github.com/99designs/gqlgen v0.13.0
+	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gocql/gocql v0.0.0-20201024154641-5913df4d474e
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/gorm v1.9.16
