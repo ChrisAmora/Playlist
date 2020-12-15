@@ -52,7 +52,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateMusic func(childComplexity int, title string) int
-		CreateUser  func(childComplexity int, name string, password string) int
+		CreateUser  func(childComplexity int, input models.UserInput) int
 	}
 
 	Query struct {
@@ -67,7 +67,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateMusic(ctx context.Context, title string) (*models.Music, error)
-	CreateUser(ctx context.Context, name string, password string) (*models.User, error)
+	CreateUser(ctx context.Context, input models.UserInput) (*models.User, error)
 }
 type QueryResolver interface {
 	GetOneMusic(ctx context.Context, id string) (*models.Music, error)
@@ -139,7 +139,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUser(childComplexity, args["name"].(string), args["password"].(string)), true
+		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(models.UserInput)), true
 
 	case "Query.GetAllMusics":
 		if e.complexity.Query.GetAllMusics == nil {
@@ -270,8 +270,13 @@ scalar Any
   email: String!
 }
 
+input UserInput {
+  email: String!
+  password: String!
+}
+
 extend type Mutation {
-  CreateUser(name: String!, password: String!): User
+  CreateUser(input: UserInput!): User
 }
 `, BuiltIn: false},
 }
@@ -299,24 +304,15 @@ func (ec *executionContext) field_Mutation_CreateMusic_args(ctx context.Context,
 func (ec *executionContext) field_Mutation_CreateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	var arg0 models.UserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["name"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["password"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg1
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -592,7 +588,7 @@ func (ec *executionContext) _Mutation_CreateUser(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUser(rctx, args["name"].(string), args["password"].(string))
+		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(models.UserInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1870,6 +1866,34 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj interface{}) (models.UserInput, error) {
+	var it models.UserInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "email":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "password":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			it.Password, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2332,6 +2356,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUserInput(ctx context.Context, v interface{}) (models.UserInput, error) {
+	res, err := ec.unmarshalInputUserInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

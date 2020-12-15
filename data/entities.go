@@ -11,6 +11,6 @@ type Music struct {
 
 type Auth struct {
 	gorm.Model
-	Email    string `gorm:"primaryKey"`
+	Email    string `gorm:"primaryKey;unique;not null"`
 	Password string
 }

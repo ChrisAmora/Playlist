@@ -2,6 +2,11 @@ type User {
   email: String!
 }
 
+input UserInput {
+  email: String!
+  password: String!
+}
+
 extend type Mutation {
-  CreateUser(name: String!, password: String!): User
+  CreateUser(input: UserInput!): User
 }

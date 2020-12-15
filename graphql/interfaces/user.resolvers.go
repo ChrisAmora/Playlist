@@ -7,10 +7,21 @@ import (
 	"context"
 
 	"github.com/betopompolo/project_playlist_server/graphql/models"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
-func (r *mutationResolver) CreateUser(ctx context.Context, name string, password string) (*models.User, error) {
-	user, err := r.UserService.Signup(ctx, name, password)
+func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInput) (*models.User, error) {
+	err := validation.ValidateStruct(&input, validation.Field(&input.Email, is.Email))
+	if err != nil {
+		return &models.User{}, err
+	}
 
-	return &models.User{Email: user.Email}, err
+	user, err := r.UserService.Signup(ctx, input.Email, input.Password)
+
+	if err != nil {
+		return &models.User{}, err
+	}
+
+	return &models.User{Email: user.Email}, nil
 }
