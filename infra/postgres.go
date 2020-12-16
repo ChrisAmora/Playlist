@@ -3,7 +3,6 @@ package infra
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
@@ -49,10 +48,6 @@ func (pm *postgresMusicRepository) GetById(c context.Context, id int64) (domain.
 
 func (pm *postgresMusicRepository) GetAll(c context.Context) ([]domain.Music, error) {
 	musics := []data.Music{}
-	err := pm.Conn.Find(&musics)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(musics)
+	pm.Conn.Find(&musics)
 	return []domain.Music{}, nil
 }

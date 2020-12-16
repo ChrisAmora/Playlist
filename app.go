@@ -9,8 +9,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 
+	"github.com/betopompolo/project_playlist_server/core"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/graphql/generated"
+	"github.com/betopompolo/project_playlist_server/graphql/handlers"
 	"github.com/betopompolo/project_playlist_server/graphql/interfaces"
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/registry"
@@ -24,7 +26,7 @@ type App struct {
 	DB     *gorm.DB
 }
 
-func (a *App) Initialize(user string, password string, dbname string) {
+func (a *App) Initialize(user string, password string, dbname string, jwtSecret string) {
 	connectionString :=
 		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
 
@@ -37,9 +39,9 @@ func (a *App) Initialize(user string, password string, dbname string) {
 	if err := Automigrate(a.DB); err != nil {
 		panic(err)
 	}
-	a.DB.Create(&data.Music{Title: "lasanha"})
 
 	a.Router = mux.NewRouter()
+	a.Router.Use(handlers.Auth(core.NewJWTService(jwtSecret)))
 
 	a.initializeGraphql()
 }
@@ -50,7 +52,7 @@ func (a *App) Run(addr string) {
 
 func (a *App) RunGraphql(port string) {
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, a.Router))
 }
 
 func (a *App) initializeRoutes() {
@@ -64,8 +66,8 @@ func (a *App) initializeGraphql() {
 		MusicService: r.NewMusicUseCase(),
 		UserService:  r.NewAuthUseCase(),
 	}}))
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	a.Router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	a.Router.Handle("/query", srv)
 
 }
 

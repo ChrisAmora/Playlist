@@ -3,6 +3,9 @@
   "server": {
     "address": "8080"
   },
+  "jwt": {
+    "secret": "betin"
+  },
   "context": {
     "timeout": 2
   },

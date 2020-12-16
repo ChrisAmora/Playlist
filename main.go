@@ -16,7 +16,8 @@ func main() {
 	dbPass := viper.GetString(`database.pass`)
 	dbName := viper.GetString(`database.name`)
 	port := viper.GetString(`server.address`)
-	a.Initialize(dbUser, dbPass, dbName)
+	jwtSecret := viper.GetString(`jwt.secret`)
+	a.Initialize(dbUser, dbPass, dbName, jwtSecret)
 	a.RunGraphql(port)
 
 }

@@ -2,8 +2,6 @@ package domain
 
 import (
 	"context"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 type MusicUsecase interface {
@@ -18,5 +16,5 @@ type AuthUsecase interface {
 
 type JWTUsecase interface {
 	Sign(c context.Context, username string) (string, error)
-	Verify(c context.Context, token string) (*jwt.Token, error)
+	Verify(c context.Context, token string) (*Claims, error)
 }
