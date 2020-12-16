@@ -9,7 +9,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 
-	"github.com/betopompolo/project_playlist_server/core"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/graphql/generated"
 	"github.com/betopompolo/project_playlist_server/graphql/handlers"
@@ -22,8 +21,9 @@ import (
 )
 
 type App struct {
-	Router *mux.Router
-	DB     *gorm.DB
+	Router    *mux.Router
+	DB        *gorm.DB
+	jwtSecret string
 }
 
 func (a *App) Initialize(user string, password string, dbname string, jwtSecret string) {
@@ -41,7 +41,8 @@ func (a *App) Initialize(user string, password string, dbname string, jwtSecret 
 	}
 
 	a.Router = mux.NewRouter()
-	a.Router.Use(handlers.Auth(core.NewJWTService(jwtSecret)))
+	a.jwtSecret = jwtSecret
+	a.Router.Use(handlers.Auth(infra.NewJWTService(jwtSecret)))
 
 	a.initializeGraphql()
 }
@@ -56,12 +57,12 @@ func (a *App) RunGraphql(port string) {
 }
 
 func (a *App) initializeRoutes() {
-	r := registry.NewRegistry(a.DB)
+	r := registry.NewRegistry(a.DB, a.jwtSecret)
 	infra.NewRouter(a.Router, r.NewAppController())
 }
 
 func (a *App) initializeGraphql() {
-	r := registry.NewRegistry(a.DB)
+	r := registry.NewRegistry(a.DB, a.jwtSecret)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicService: r.NewMusicUseCase(),
 		UserService:  r.NewAuthUseCase(),

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/betopompolo/project_playlist_server/domain"
+	"github.com/betopompolo/project_playlist_server/data"
 )
 
 type AuthToken struct {
@@ -13,7 +13,7 @@ type AuthToken struct {
 	IsAuthenticated bool
 }
 
-func Auth(uc domain.JWTUsecase) func(http.Handler) http.Handler {
+func Auth(uc data.JWTRepository) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			c := r.Header.Get("authorization")

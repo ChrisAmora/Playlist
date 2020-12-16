@@ -1,10 +1,10 @@
-package core
+package infra
 
 import (
 	"context"
 	"time"
 
-	"github.com/betopompolo/project_playlist_server/domain"
+	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -12,13 +12,13 @@ type JWTService struct {
 	secret string
 }
 
-func NewJWTService(secret string) domain.JWTUsecase {
+func NewJWTService(secret string) data.JWTRepository {
 	return &JWTService{secret}
 }
 
 func (js *JWTService) Sign(c context.Context, username string) (string, error) {
 	expirationTime := time.Now().Add(time.Hour)
-	claims := &domain.Claims{
+	claims := &data.Claims{
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -33,8 +33,8 @@ func (js *JWTService) Sign(c context.Context, username string) (string, error) {
 
 }
 
-func (js *JWTService) Verify(c context.Context, token string) (*domain.Claims, error) {
-	claims := &domain.Claims{}
+func (js *JWTService) Verify(c context.Context, token string) (*data.Claims, error) {
+	claims := &data.Claims{}
 	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(js.secret), nil
 	})

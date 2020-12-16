@@ -9,7 +9,8 @@ import (
 )
 
 type registry struct {
-	db *gorm.DB
+	db        *gorm.DB
+	jwtSecret string
 }
 
 type Registry interface {
@@ -18,8 +19,8 @@ type Registry interface {
 	NewAuthUseCase() domain.AuthUsecase
 }
 
-func NewRegistry(db *gorm.DB) Registry {
-	return &registry{db}
+func NewRegistry(db *gorm.DB, jwtSecret string) Registry {
+	return &registry{db, jwtSecret}
 }
 
 func (r *registry) NewAppController() rest.AppController {
@@ -40,10 +41,14 @@ func (r *registry) NewAuthRepository() data.AuthRepository {
 	return infra.NewPostgresAuthRepository(r.db)
 }
 
+func (r *registry) NewAJWTRepository() data.JWTRepository {
+	return infra.NewJWTService(r.jwtSecret)
+}
+
 func (r *registry) NewMusicUseCase() domain.MusicUsecase {
 	return data.NewMusicUsecase(r.NewMusicRepository())
 }
 
 func (r *registry) NewAuthUseCase() domain.AuthUsecase {
-	return data.NewAuthUsecase(r.NewAuthRepository())
+	return data.NewAuthUsecase(r.NewAuthRepository(), r.NewAJWTRepository())
 }

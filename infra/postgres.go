@@ -26,8 +26,8 @@ func NewPostgresAuthRepository(Conn *gorm.DB) data.AuthRepository {
 }
 
 func (ar *postgresAuthRepository) GetUser(c context.Context, email string) (data.Auth, error) {
-	auth := &data.Auth{Email: email}
-	db := ar.Conn.Take(auth)
+	auth := &data.Auth{}
+	db := ar.Conn.Debug().Where("email = ?", email).First(&auth)
 	return *auth, db.Error
 }
 

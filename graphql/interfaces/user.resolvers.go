@@ -25,3 +25,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 
 	return &models.User{Email: user.Email}, nil
 }
+
+func (r *mutationResolver) Login(ctx context.Context, input models.UserInput) (*models.AuthResponse, error) {
+	err := validation.ValidateStruct(&input, validation.Field(&input.Email, is.Email))
+	if err != nil {
+		return &models.AuthResponse{}, err
+	}
+	auth, err := r.UserService.Login(ctx, input.Email, input.Password)
+	if err != nil {
+		return &models.AuthResponse{}, err
+	}
+	return &models.AuthResponse{User: &models.User{Email: auth.User.Email}, Token: auth.Token}, err
+}

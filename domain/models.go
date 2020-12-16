@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 type Music struct {
@@ -13,12 +11,11 @@ type Music struct {
 	CreatedAt time.Time
 }
 
-type User struct {
-	Email    string
-	Password string
+type Auth struct {
+	User
+	Token string
 }
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.StandardClaims
+type User struct {
+	Email string
 }
