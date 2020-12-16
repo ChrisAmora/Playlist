@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type AuthResponse struct {
+	User  *User  `json:"user"`
+	Token string `json:"token"`
+}
+
 type Music struct {
 	ID        string    `json:"id"`
 	Title     string    `json:"title"`

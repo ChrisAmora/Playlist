@@ -2,11 +2,17 @@ type User {
   email: String!
 }
 
+type AuthResponse {
+  user: User!
+  token: String!
+}
+
 input UserInput {
   email: String!
   password: String!
 }
 
 extend type Mutation {
-  CreateUser(input: UserInput!): User
+  CreateUser(input: UserInput!): User!
+  Login(input: UserInput!): AuthResponse!
 }
