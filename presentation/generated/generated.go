@@ -12,7 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/betopompolo/project_playlist_server/graphql/models"
+	"github.com/betopompolo/project_playlist_server/presentation/models"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -264,7 +264,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graphql/schema/directives.graphql", Input: `# GQL Directives
+	{Name: "presentation/schema/directives.graphql", Input: `# GQL Directives
 # This part is fairly necessary and is described in the gql documentation
 # https://gqlgen.com/config/
 directive @goModel(
@@ -277,7 +277,7 @@ directive @goField(
   name: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 `, BuiltIn: false},
-	{Name: "graphql/schema/music.graphql", Input: `type Music {
+	{Name: "presentation/schema/music.graphql", Input: `type Music {
   id: ID!
   title: String!
   createdAt: Time!
@@ -293,13 +293,13 @@ extend type Query {
   GetAllMusics: [Music]
 }
 `, BuiltIn: false},
-	{Name: "graphql/schema/schema.graphql", Input: `# Custom schema
+	{Name: "presentation/schema/schema.graphql", Input: `# Custom schema
 
 scalar Time
 scalar Map
 scalar Any
 `, BuiltIn: false},
-	{Name: "graphql/schema/user.graphql", Input: `type User {
+	{Name: "presentation/schema/user.graphql", Input: `type User {
   email: String!
 }
 
@@ -346,7 +346,7 @@ func (ec *executionContext) field_Mutation_CreateUser_args(ctx context.Context, 
 	var arg0 models.UserInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUserInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -361,7 +361,7 @@ func (ec *executionContext) field_Mutation_Login_args(ctx context.Context, rawAr
 	var arg0 models.UserInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUserInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -470,7 +470,7 @@ func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphq
 	}
 	res := resTmp.(*models.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthResponse_token(ctx context.Context, field graphql.CollectedField, obj *models.AuthResponse) (ret graphql.Marshaler) {
@@ -684,7 +684,7 @@ func (ec *executionContext) _Mutation_CreateMusic(ctx context.Context, field gra
 	}
 	res := resTmp.(*models.Music)
 	fc.Result = res
-	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_CreateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -726,7 +726,7 @@ func (ec *executionContext) _Mutation_CreateUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*models.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_Login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -768,7 +768,7 @@ func (ec *executionContext) _Mutation_Login(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*models.AuthResponse)
 	fc.Result = res
-	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐAuthResponse(ctx, field.Selections, res)
+	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -807,7 +807,7 @@ func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphq
 	}
 	res := resTmp.(*models.Music)
 	fc.Result = res
-	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -839,7 +839,7 @@ func (ec *executionContext) _Query_GetAllMusics(ctx context.Context, field graph
 	}
 	res := resTmp.([]*models.Music)
 	fc.Result = res
-	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, field.Selections, res)
+	return ec.marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2507,11 +2507,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v models.AuthResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v models.AuthResponse) graphql.Marshaler {
 	return ec._AuthResponse(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v *models.AuthResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v *models.AuthResponse) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2581,11 +2581,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v *models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v *models.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2595,7 +2595,7 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐUserInput(ctx context.Context, v interface{}) (models.UserInput, error) {
+func (ec *executionContext) unmarshalNUserInput2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUserInput(ctx context.Context, v interface{}) (models.UserInput, error) {
 	res, err := ec.unmarshalInputUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -2853,7 +2853,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v []*models.Music) graphql.Marshaler {
+func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v []*models.Music) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -2880,7 +2880,7 @@ func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋpro
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx, sel, v[i])
+			ret[i] = ec.marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2893,7 +2893,7 @@ func (ec *executionContext) marshalOMusic2ᚕᚖgithubᚗcomᚋbetopompoloᚋpro
 	return ret
 }
 
-func (ec *executionContext) marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋgraphqlᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v *models.Music) graphql.Marshaler {
+func (ec *executionContext) marshalOMusic2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐMusic(ctx context.Context, sel ast.SelectionSet, v *models.Music) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -6,8 +6,8 @@ package interfaces
 import (
 	"context"
 
-	"github.com/betopompolo/project_playlist_server/graphql/models"
-	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/betopompolo/project_playlist_server/presentation/models"
+	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 

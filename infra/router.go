@@ -1,7 +1,7 @@
 package infra
 
 import (
-	"github.com/betopompolo/project_playlist_server/rest"
+	"github.com/betopompolo/project_playlist_server/presentation/rest"
 	"github.com/gorilla/mux"
 )
 
