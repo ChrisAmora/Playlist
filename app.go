@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/infra"
@@ -20,14 +21,14 @@ import (
 )
 
 type App struct {
-	Router    *mux.Router
-	DB        *gorm.DB
-	jwtSecret string
+	Router *mux.Router
+	DB     *gorm.DB
 }
 
-func (a *App) Initialize(user string, password string, dbname string, jwtSecret string) {
+func (a *App) Initialize() {
+	c := GetConf()
 	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
+		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", c.Database.User, c.Database.Pass, c.Database.Name)
 
 	var err error
 	a.DB, err = gorm.Open("postgres", connectionString)
@@ -40,8 +41,7 @@ func (a *App) Initialize(user string, password string, dbname string, jwtSecret 
 	}
 
 	a.Router = mux.NewRouter()
-	a.jwtSecret = jwtSecret
-	a.Router.Use(handlers.Auth(infra.NewJWTService(jwtSecret)))
+	a.Router.Use(handlers.Auth(infra.NewJWTService(c.Jwt.Secret)))
 
 	a.initializeGraphql()
 }
@@ -50,22 +50,28 @@ func (a *App) Run(addr string) {
 	log.Fatal(http.ListenAndServe(":8000", a.Router))
 }
 
-func (a *App) RunGraphql(port string) {
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, a.Router))
+func (a *App) RunGraphql() {
+	c := GetConf()
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", c.Server.Address)
+	log.Fatal(http.ListenAndServe(":"+c.Server.Address, a.Router))
 }
 
 func (a *App) initializeRoutes() {
-	r := registry.NewRegistry(a.DB, a.jwtSecret)
+	c := GetConf()
+
+	r := registry.NewRegistry(a.DB, c.Jwt.Secret)
 	infra.NewRouter(a.Router, r.NewAppController())
 }
 
 func (a *App) initializeGraphql() {
-	r := registry.NewRegistry(a.DB, a.jwtSecret)
+	c := GetConf()
+	r := registry.NewRegistry(a.DB, c.Jwt.Secret)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicService: r.NewMusicUseCase(),
 		UserService:  r.NewAuthUseCase(),
 	}}))
+
+	srv.Use(extension.Introspection{})
 	a.Router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	a.Router.Handle("/query", srv)
 
