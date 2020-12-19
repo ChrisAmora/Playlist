@@ -1,9 +1,8 @@
-package main
+package config
 
 import (
 	"fmt"
 	"log"
-
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -23,12 +22,68 @@ import (
 type App struct {
 	Router *mux.Router
 	DB     *gorm.DB
+	Config *Config
+}
+
+type Config struct {
+	Debug  bool
+	Server struct {
+		Address string
+	}
+	Jwt struct {
+		Secret string
+	}
+	Context struct {
+		Timeout int64
+	}
+	Database struct {
+		Host string
+		Port int64
+		User string
+		Pass string
+		Name string
+	}
+}
+
+func GetConf() *Config {
+	conf := &Config{}
+	// err := viper.Unmarshal(&conf)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	conf.Database.Host = "localhost"
+	conf.Database.Port = 5432
+	conf.Database.User = "postgres"
+	conf.Database.Pass = "postgres"
+	conf.Database.Name = "postgres"
+	conf.Context.Timeout = 2
+	conf.Debug = true
+	conf.Jwt.Secret = "betin"
+	conf.Server.Address = "8080"
+	return conf
+}
+
+func Setup() *App {
+	// viper.SetConfigFile(`config.json`)
+	// err := viper.ReadInConfig()
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+	a := App{}
+	// if err != nil {
+	// 	panic(err)
+	// }
+	a.Initialize()
+	a.initializeGraphql()
+	a.RunGraphql()
+	return &a
 }
 
 func (a *App) Initialize() {
-	c := GetConf()
+	a.Config = GetConf()
 	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", c.Database.User, c.Database.Pass, c.Database.Name)
+		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", a.Config.Database.User, a.Config.Database.Pass, a.Config.Database.Name)
 
 	var err error
 	a.DB, err = gorm.Open("postgres", connectionString)
@@ -41,9 +96,8 @@ func (a *App) Initialize() {
 	}
 
 	a.Router = mux.NewRouter()
-	a.Router.Use(handlers.Auth(infra.NewJWTService(c.Jwt.Secret)))
+	a.Router.Use(handlers.Auth(infra.NewJWTService(a.Config.Jwt.Secret)))
 
-	a.initializeGraphql()
 }
 
 func (a *App) Run(addr string) {
@@ -51,9 +105,8 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) RunGraphql() {
-	c := GetConf()
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", c.Server.Address)
-	log.Fatal(http.ListenAndServe(":"+c.Server.Address, a.Router))
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", a.Config.Server.Address)
+	log.Fatal(http.ListenAndServe(":"+a.Config.Server.Address, a.Router))
 }
 
 func (a *App) initializeRoutes() {
@@ -64,8 +117,7 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) initializeGraphql() {
-	c := GetConf()
-	r := registry.NewRegistry(a.DB, c.Jwt.Secret)
+	r := registry.NewRegistry(a.DB, a.Config.Jwt.Secret)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicService: r.NewMusicUseCase(),
 		UserService:  r.NewAuthUseCase(),
