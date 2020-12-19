@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/infra"
@@ -19,10 +18,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var AppInstance *App
+
 type App struct {
 	Router *mux.Router
 	DB     *gorm.DB
 	Config *Config
+	Server *handler.Server
 }
 
 type Config struct {
@@ -46,6 +48,12 @@ type Config struct {
 }
 
 func GetConf() *Config {
+	// viper.SetConfigFile(`config.json`)
+	// err := viper.ReadInConfig()
+
+	// if err != nil {
+	// 	panic(err)
+	// }
 	conf := &Config{}
 	// err := viper.Unmarshal(&conf)
 	// if err != nil {
@@ -64,24 +72,15 @@ func GetConf() *Config {
 }
 
 func Setup() *App {
-	// viper.SetConfigFile(`config.json`)
-	// err := viper.ReadInConfig()
-
-	// if err != nil {
-	// 	panic(err)
-	// }
 	a := App{}
-	// if err != nil {
-	// 	panic(err)
-	// }
-	a.Initialize()
-	a.initializeGraphql()
-	a.RunGraphql()
+	a.Config = GetConf()
+	a.InitializeDB()
+	a.InitializeRouter()
+	a.InitializeGraphql()
 	return &a
 }
 
-func (a *App) Initialize() {
-	a.Config = GetConf()
+func (a *App) InitializeDB() {
 	connectionString :=
 		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", a.Config.Database.User, a.Config.Database.Pass, a.Config.Database.Name)
 
@@ -95,38 +94,38 @@ func (a *App) Initialize() {
 		panic(err)
 	}
 
-	a.Router = mux.NewRouter()
-	a.Router.Use(handlers.Auth(infra.NewJWTService(a.Config.Jwt.Secret)))
-
 }
 
-func (a *App) Run(addr string) {
+func (a *App) InitializeRouter() {
+	a.Router = mux.NewRouter()
+	a.Router.Use(handlers.Auth(infra.NewJWTService(a.Config.Jwt.Secret)))
+}
+
+func (a *App) RunRest() {
 	log.Fatal(http.ListenAndServe(":8000", a.Router))
 }
 
 func (a *App) RunGraphql() {
+	a.Router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	a.Router.Handle("/query", a.Server)
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", a.Config.Server.Address)
 	log.Fatal(http.ListenAndServe(":"+a.Config.Server.Address, a.Router))
 }
 
-func (a *App) initializeRoutes() {
+func (a *App) initializeRoutesRest() {
 	c := GetConf()
 
 	r := registry.NewRegistry(a.DB, c.Jwt.Secret)
 	infra.NewRouter(a.Router, r.NewAppController())
 }
 
-func (a *App) initializeGraphql() {
+func (a *App) InitializeGraphql() {
 	r := registry.NewRegistry(a.DB, a.Config.Jwt.Secret)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicService: r.NewMusicUseCase(),
 		UserService:  r.NewAuthUseCase(),
 	}}))
-
-	srv.Use(extension.Introspection{})
-	a.Router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	a.Router.Handle("/query", srv)
-
+	a.Server = srv
 }
 
 func Automigrate(db *gorm.DB) error {
