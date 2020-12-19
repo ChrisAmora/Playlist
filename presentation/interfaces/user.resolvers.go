@@ -34,7 +34,7 @@ func (r *mutationResolver) Login(ctx context.Context, input models.UserInput) (*
 	}
 	auth, err := r.UserService.Login(ctx, input.Email, input.Password)
 	if err != nil {
-		return &models.AuthResponse{}, err
+		return &models.AuthResponse{}, gqlerrors.GraphqlUnauthorized(ctx, "Please provide a valid email or password")
 	}
 
 	return &models.AuthResponse{User: &models.User{Email: auth.User.Email}, Token: auth.Token}, err
