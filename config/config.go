@@ -16,6 +16,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 var AppInstance *App
@@ -48,26 +49,17 @@ type Config struct {
 }
 
 func GetConf() *Config {
-	// viper.SetConfigFile(`config.json`)
-	// err := viper.ReadInConfig()
+	viper.SetConfigFile(`config.json`)
+	err := viper.ReadInConfig()
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	if err != nil {
+		panic(err)
+	}
 	conf := &Config{}
-	// err := viper.Unmarshal(&conf)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	conf.Database.Host = "localhost"
-	conf.Database.Port = 5432
-	conf.Database.User = "postgres"
-	conf.Database.Pass = "postgres"
-	conf.Database.Name = "postgres"
-	conf.Context.Timeout = 2
-	conf.Debug = true
-	conf.Jwt.Secret = "betin"
-	conf.Server.Address = "8080"
+	err = viper.Unmarshal(&conf)
+	if err != nil {
+		panic(err)
+	}
 	return conf
 }
 
