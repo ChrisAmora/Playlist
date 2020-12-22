@@ -8,70 +8,85 @@ import (
 	"github.com/betopompolo/project_playlist_server/config"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/presentation/models"
-	"github.com/stretchr/testify/require"
-	"golang.org/x/crypto/bcrypt"
 )
 
-func TestAuth(t *testing.T) {
+func TestCreateUser(t *testing.T) {
 	c := client.New(config.AppInstance.Server)
-	email := "betindaora22@gmail.com"
-	password := "lasanhaboa"
-	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
-	auth := data.Auth{Email: email, Password: string(hash)}
-	config.AppInstance.DB.Create(&auth)
-
-	t.Cleanup(func() {
-		config.AppInstance.DB.Unscoped().Delete(&auth)
-	})
 
 	tcs := []struct {
 		name     string
 		email    string
 		password string
-		request  string
 	}{
 		{
-			name:     "Should return a valid token and email",
-			email:    email,
-			password: password,
-			request:  fmt.Sprintf(`mutation {Login(input: {email: "%s", password: "%s"}) { user { email } token }}`, email, password),
+			name:     "Should create a user",
+			email:    "efewfuhhuef@gmail.com",
+			password: "fwefuehfwheuf",
+		},
+	}
+
+	tcsE := []struct {
+		name         string
+		email        string
+		password     string
+		errorMessage string
+	}{
+		{
+			name:         "Should fail if invalid email",
+			email:        "a",
+			password:     "fwefuehfwheuf",
+			errorMessage: `[{"message":"email: must be a valid email address.","path":["CreateUser"]}]`,
 		},
 	}
 
 	for _, tc := range tcs {
 		var resp struct {
-			Login models.AuthResponse
+			CreateUser models.User
 		}
 		t.Run(tc.name, func(t *testing.T) {
-			c.Post(tc.request, &resp)
-			if resp.Login.User.Email != tc.email {
-				t.Errorf("Want '%s', got '%s'", tc.email, resp.Login.User.Email)
+			request := fmt.Sprintf(`mutation { CreateUser(input: {email: "%s", password: "%s"}) { email } }`, tc.email, tc.password)
+			c.Post(request, &resp)
+			auth := data.Auth{}
+			defer func() {
+				config.AppInstance.DB.Unscoped().Delete(&auth)
+			}()
+			config.AppInstance.DB.Where("email = ?", tc.email).First(&auth)
+			if resp.CreateUser.Email != tc.email || resp.CreateUser.Email != auth.Email {
+				t.Errorf("Want '%s', got '%s'", tc.email, resp.CreateUser.Email)
 			}
 		})
 	}
 
-	t.Run("Should return a valid token and email", func(t *testing.T) {
+	for _, tc := range tcsE {
 		var resp struct {
-			Login models.AuthResponse
+		}
+		t.Run(tc.name, func(t *testing.T) {
+			request := fmt.Sprintf(`mutation { CreateUser(input: {email: "%s", password: "%s"}) { email } }`, tc.email, tc.password)
+			err := c.Post(request, &resp)
+			if err.Error() != tc.errorMessage {
+				t.Error()
+			}
+		})
+	}
+
+	t.Run("Fail if user already exists", func(t *testing.T) {
+		var resp struct {
+			CreateUser models.User
+		}
+		var resp2 struct{}
+		email := "betin@gmail.com"
+		password := "passworddobetin"
+		request := fmt.Sprintf(`mutation { CreateUser(input: {email: "%s", password: "%s"}) { email } }`, email, password)
+		c.Post(request, &resp)
+		auth := data.Auth{}
+		defer func() {
+			config.AppInstance.DB.Unscoped().Delete(&auth)
+		}()
+		err := c.Post(request, &resp2)
+		if err.Error() != `[{"message":"pq: duplicate key value violates unique constraint \"auths_email_key\"","path":["CreateUser"]}]` {
+			t.Error()
 		}
 
-		c.Post(fmt.Sprintf(`mutation {Login(input: {email: "%s", password: "%s"}) { user { email } token }}`, email, password), &resp)
-		require.Equal(t, email, resp.Login.User.Email)
-		require.NotEmpty(t, resp.Login.Token)
-	})
-
-	t.Run("Fail if invalid email format", func(t *testing.T) {
-		var resp struct{}
-		err := c.Post(`mutation {Login(input: {email: "a", password: "a"}) { user { email } token }}`, &resp)
-		require.EqualError(t, err, `[{"message":"Unprocessable Entity","path":["Login"],"extensions":{"customMessage":"email: must be a valid email address.","httpStatusCode":"422"}}]`)
-	})
-
-	t.Run("Fail if invalid credentials", func(t *testing.T) {
-		var resp struct{}
-		err := c.Post(`mutation {Login(input: {email: "a@gmail.com", password: "afefe"}) { user { email } token }}`, &resp)
-		require.EqualError(t, err, `[{"message":"Unauthorized","path":["Login"],"extensions":{"customMessage":"Please provide a valid email or password","httpStatusCode":"401"}}]`)
-		err = c.Post(`mutation {Login(input: {email: "afwfw@gmail.com", password: "afefe"}) { user { email } token }}`, &resp)
-		require.EqualError(t, err, `[{"message":"Unauthorized","path":["Login"],"extensions":{"customMessage":"Please provide a valid email or password","httpStatusCode":"401"}}]`)
 	})
 
 }
