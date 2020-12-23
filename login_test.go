@@ -51,7 +51,7 @@ func TestLogin(t *testing.T) {
 
 	for _, tc := range tcs {
 		var resp struct {
-			Login models.AuthResponse
+			Login models.Auth
 		}
 		t.Run(tc.name, func(t *testing.T) {
 			request := fmt.Sprintf(`mutation {Login(input: {email: "%s", password: "%s"}) { user { email } token }}`, tc.email, tc.password)

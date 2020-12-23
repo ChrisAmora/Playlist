@@ -43,7 +43,7 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	AuthResponse struct {
+	Auth struct {
 		Token func(childComplexity int) int
 		User  func(childComplexity int) int
 	}
@@ -74,7 +74,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateMusic(ctx context.Context, title string) (*models.Music, error)
 	CreateUser(ctx context.Context, input models.UserInput) (*models.User, error)
-	Login(ctx context.Context, input models.UserInput) (*models.AuthResponse, error)
+	Login(ctx context.Context, input models.UserInput) (*models.Auth, error)
 }
 type QueryResolver interface {
 	GetOneMusic(ctx context.Context, id string) (*models.Music, error)
@@ -96,19 +96,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "AuthResponse.token":
-		if e.complexity.AuthResponse.Token == nil {
+	case "Auth.token":
+		if e.complexity.Auth.Token == nil {
 			break
 		}
 
-		return e.complexity.AuthResponse.Token(childComplexity), true
+		return e.complexity.Auth.Token(childComplexity), true
 
-	case "AuthResponse.user":
-		if e.complexity.AuthResponse.User == nil {
+	case "Auth.user":
+		if e.complexity.Auth.User == nil {
 			break
 		}
 
-		return e.complexity.AuthResponse.User(childComplexity), true
+		return e.complexity.Auth.User(childComplexity), true
 
 	case "Music.createdAt":
 		if e.complexity.Music.CreatedAt == nil {
@@ -303,7 +303,7 @@ scalar Any
   email: String!
 }
 
-type AuthResponse {
+type Auth {
   user: User!
   token: String!
 }
@@ -315,7 +315,7 @@ input UserInput {
 
 extend type Mutation {
   CreateUser(input: UserInput!): User!
-  Login(input: UserInput!): AuthResponse!
+  Login(input: UserInput!): Auth!
 }
 `, BuiltIn: false},
 }
@@ -438,7 +438,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphql.CollectedField, obj *models.AuthResponse) (ret graphql.Marshaler) {
+func (ec *executionContext) _Auth_user(ctx context.Context, field graphql.CollectedField, obj *models.Auth) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -446,7 +446,7 @@ func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphq
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "AuthResponse",
+		Object:     "Auth",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -473,7 +473,7 @@ func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphq
 	return ec.marshalNUser2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthResponse_token(ctx context.Context, field graphql.CollectedField, obj *models.AuthResponse) (ret graphql.Marshaler) {
+func (ec *executionContext) _Auth_token(ctx context.Context, field graphql.CollectedField, obj *models.Auth) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -481,7 +481,7 @@ func (ec *executionContext) _AuthResponse_token(ctx context.Context, field graph
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "AuthResponse",
+		Object:     "Auth",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -766,9 +766,9 @@ func (ec *executionContext) _Mutation_Login(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.AuthResponse)
+	res := resTmp.(*models.Auth)
 	fc.Result = res
-	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx, field.Selections, res)
+	return ec.marshalNAuth2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuth(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_GetOneMusic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2071,24 +2071,24 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 
 // region    **************************** object.gotpl ****************************
 
-var authResponseImplementors = []string{"AuthResponse"}
+var authImplementors = []string{"Auth"}
 
-func (ec *executionContext) _AuthResponse(ctx context.Context, sel ast.SelectionSet, obj *models.AuthResponse) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, authResponseImplementors)
+func (ec *executionContext) _Auth(ctx context.Context, sel ast.SelectionSet, obj *models.Auth) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, authImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("AuthResponse")
+			out.Values[i] = graphql.MarshalString("Auth")
 		case "user":
-			out.Values[i] = ec._AuthResponse_user(ctx, field, obj)
+			out.Values[i] = ec._Auth_user(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
 		case "token":
-			out.Values[i] = ec._AuthResponse_token(ctx, field, obj)
+			out.Values[i] = ec._Auth_token(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2507,18 +2507,18 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v models.AuthResponse) graphql.Marshaler {
-	return ec._AuthResponse(ctx, sel, &v)
+func (ec *executionContext) marshalNAuth2githubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuth(ctx context.Context, sel ast.SelectionSet, v models.Auth) graphql.Marshaler {
+	return ec._Auth(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v *models.AuthResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNAuth2ᚖgithubᚗcomᚋbetopompoloᚋproject_playlist_serverᚋpresentationᚋmodelsᚐAuth(ctx context.Context, sel ast.SelectionSet, v *models.Auth) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._AuthResponse(ctx, sel, v)
+	return ec._Auth(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

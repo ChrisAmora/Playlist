@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type AuthResponse struct {
+type Auth struct {
 	User  *User  `json:"user"`
 	Token string `json:"token"`
 }
