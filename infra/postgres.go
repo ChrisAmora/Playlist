@@ -33,7 +33,7 @@ func (ar *postgresAuthRepository) GetUser(c context.Context, email string) (data
 
 func (ar *postgresAuthRepository) CreateUser(c context.Context, email, password string) (*data.Auth, error) {
 	auth := &data.Auth{Email: email, Password: password}
-	result := ar.Conn.Debug().Create(&auth)
+	result := ar.Conn.Create(&auth)
 
 	return auth, result.Error
 }

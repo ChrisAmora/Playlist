@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/betopompolo/project_playlist_server/data"
@@ -23,7 +22,6 @@ func Auth(uc data.JWTRepository) func(http.Handler) http.Handler {
 			}
 
 			token, _ := uc.Verify(r.Context(), c)
-			fmt.Println(token.Username)
 
 			ctx := context.WithValue(r.Context(), "user", &AuthToken{Name: token.Username, IsAuthenticated: true})
 

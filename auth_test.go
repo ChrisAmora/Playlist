@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/betopompolo/project_playlist_server/config"
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/presentation/models"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -24,18 +26,17 @@ func TestCreateUser(t *testing.T) {
 			password: "fwefuehfwheuf",
 		},
 	}
-
 	tcsE := []struct {
-		name         string
-		email        string
-		password     string
-		errorMessage string
+		name      string
+		email     string
+		password  string
+		errorType gqlerror.Error
 	}{
 		{
-			name:         "Should fail if invalid email",
-			email:        "a",
-			password:     "fwefuehfwheuf",
-			errorMessage: `[{"message":"email: must be a valid email address.","path":["CreateUser"]}]`,
+			name:      "Should fail if invalid email",
+			email:     "a",
+			password:  "fwefuehfwheuf",
+			errorType: gqlerror.Error{Message: "email: must be a valid email address."},
 		},
 	}
 
@@ -61,9 +62,14 @@ func TestCreateUser(t *testing.T) {
 		var resp struct {
 		}
 		t.Run(tc.name, func(t *testing.T) {
+			var gqlErrors []gqlerror.Error
+
 			request := fmt.Sprintf(`mutation { CreateUser(input: {email: "%s", password: "%s"}) { email } }`, tc.email, tc.password)
 			err := c.Post(request, &resp)
-			if err.Error() != tc.errorMessage {
+			if err := json.Unmarshal([]byte(err.Error()), &gqlErrors); err != nil {
+				t.Error()
+			}
+			if gqlErrors[0].Message != tc.errorType.Message {
 				t.Error()
 			}
 		})
