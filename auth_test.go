@@ -79,6 +79,7 @@ func TestCreateUser(t *testing.T) {
 		var resp struct {
 			CreateUser models.User
 		}
+		var gqlErrors []gqlerror.Error
 		var resp2 struct{}
 		email := "betin@gmail.com"
 		password := "passworddobetin"
@@ -89,7 +90,14 @@ func TestCreateUser(t *testing.T) {
 			config.AppInstance.DB.Unscoped().Delete(&auth)
 		}()
 		err := c.Post(request, &resp2)
-		if err.Error() != `[{"message":"ERROR: duplicate key value violates unique constraint \"auths_email_key\" (SQLSTATE 23505)","path":["CreateUser"]}]` {
+		if err := json.Unmarshal([]byte(err.Error()), &gqlErrors); err != nil {
+			t.Error()
+		}
+		gqlError := gqlErrors[0]
+		if gqlError.Message != "User Already Exist" {
+			t.Error()
+		}
+		if gqlError.Extensions["httpStatusCode"] != "200" {
 			t.Error()
 		}
 

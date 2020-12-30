@@ -113,8 +113,8 @@ func (a *App) initializeRoutesRest() {
 func (a *App) InitializeGraphql() {
 	r := registry.NewRegistry(a.DB, a.Config.Jwt.Secret)
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
-		MusicService: r.NewMusicUseCase(),
-		UserService:  r.NewAuthUseCase(),
+		MusicUsecase: r.NewMusicUseCase(),
+		UserUsecase:  r.NewAuthUseCase(),
 	}}))
 	a.Server = srv
 }

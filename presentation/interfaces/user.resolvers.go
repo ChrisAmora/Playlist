@@ -6,6 +6,7 @@ package interfaces
 import (
 	"context"
 
+	"github.com/betopompolo/project_playlist_server/domain"
 	gqlerrors "github.com/betopompolo/project_playlist_server/presentation/gql-errors"
 	"github.com/betopompolo/project_playlist_server/presentation/models"
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -18,9 +19,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 		return &models.User{}, err
 	}
 
-	user, err := r.UserService.Signup(ctx, input.Email, input.Password)
+	user, err := r.UserUsecase.Signup(ctx, input.Email, input.Password)
 
 	if err != nil {
+		if _, ok := err.(*domain.RequestError); ok {
+			return &models.User{}, gqlerrors.GraphqlUserAlreadyExist(ctx)
+		}
 		return &models.User{}, err
 	}
 
@@ -32,7 +36,7 @@ func (r *mutationResolver) Login(ctx context.Context, input models.UserInput) (*
 	if err != nil {
 		return &models.Auth{}, gqlerrors.GraphqlInvalidInput(ctx, err.Error())
 	}
-	auth, err := r.UserService.Login(ctx, input.Email, input.Password)
+	auth, err := r.UserUsecase.Login(ctx, input.Email, input.Password)
 	if err != nil {
 		return &models.Auth{}, gqlerrors.GraphqlUnauthorized(ctx, "Please provide a valid email or password")
 	}

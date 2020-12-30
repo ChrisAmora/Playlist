@@ -20,7 +20,7 @@ func (r *queryResolver) GetOneMusic(ctx context.Context, id string) (*models1.Mu
 }
 
 func (r *queryResolver) GetAllMusics(ctx context.Context) ([]*models1.Music, error) {
-	r.MusicService.GetAllMusics(ctx)
+	r.MusicUsecase.GetAllMusics(ctx)
 	panic(fmt.Errorf("not implemented"))
 }
 

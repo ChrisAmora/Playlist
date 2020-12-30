@@ -7,6 +7,6 @@ import "github.com/betopompolo/project_playlist_server/domain"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	MusicService domain.MusicUsecase
-	UserService  domain.AuthUsecase
+	MusicUsecase domain.MusicUsecase
+	UserUsecase  domain.AuthUsecase
 }

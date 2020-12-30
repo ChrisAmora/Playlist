@@ -14,6 +14,13 @@ func GraphqlUnauthorized(ctx context.Context, message string) error {
 	}}
 }
 
+func GraphqlUserAlreadyExist(ctx context.Context) error {
+	return &gqlerror.Error{Message: "User Already Exist", Path: graphql.GetPath(ctx), Extensions: map[string]interface{}{
+		"httpStatusCode": "200",
+		"customMessage":  "",
+	}}
+}
+
 func GraphqlInvalidInput(ctx context.Context, message string) error {
 	return &gqlerror.Error{Message: "Unprocessable Entity", Path: graphql.GetPath(ctx), Extensions: map[string]interface{}{
 		"httpStatusCode": "422",

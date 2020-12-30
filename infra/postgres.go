@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
@@ -34,6 +35,12 @@ func (ar *postgresAuthRepository) GetUser(c context.Context, email string) (data
 func (ar *postgresAuthRepository) CreateUser(c context.Context, email, password string) (*data.Auth, error) {
 	auth := &data.Auth{Email: email, Password: password}
 	result := ar.Conn.Create(&auth)
+	if result.Error != nil {
+		if strings.Contains(result.Error.Error(), "SQLSTATE 23505") {
+			return &data.Auth{}, &domain.RequestError{}
+		}
+		return &data.Auth{}, result.Error
+	}
 
 	return auth, result.Error
 }

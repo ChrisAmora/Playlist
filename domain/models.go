@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -18,4 +19,12 @@ type Auth struct {
 
 type User struct {
 	Email string
+}
+
+type RequestError struct {
+	Err error
+}
+
+func (r *RequestError) Error() string {
+	return fmt.Sprintf("Request Error %v", r.Err)
 }
