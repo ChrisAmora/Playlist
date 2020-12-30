@@ -14,9 +14,10 @@ import (
 	"github.com/betopompolo/project_playlist_server/presentation/interfaces"
 	"github.com/betopompolo/project_playlist_server/registry"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var AppInstance *App
@@ -41,7 +42,7 @@ type Config struct {
 	}
 	Database struct {
 		Host string
-		Port int64
+		Port string
 		User string
 		Pass string
 		Name string
@@ -73,11 +74,9 @@ func Setup() *App {
 }
 
 func (a *App) InitializeDB() {
-	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", a.Config.Database.User, a.Config.Database.Pass, a.Config.Database.Name)
-
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", a.Config.Database.Host, a.Config.Database.User, a.Config.Database.Pass, a.Config.Database.Name, a.Config.Database.Port)
 	var err error
-	a.DB, err = gorm.Open("postgres", connectionString)
+	a.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -121,5 +120,5 @@ func (a *App) InitializeGraphql() {
 }
 
 func Automigrate(db *gorm.DB) error {
-	return db.AutoMigrate(&data.Music{}, &data.Auth{}).Error
+	return db.AutoMigrate(&data.Music{}, &data.Auth{}, &data.PlayList{}, &data.Track{})
 }

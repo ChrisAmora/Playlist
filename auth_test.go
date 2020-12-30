@@ -89,7 +89,7 @@ func TestCreateUser(t *testing.T) {
 			config.AppInstance.DB.Unscoped().Delete(&auth)
 		}()
 		err := c.Post(request, &resp2)
-		if err.Error() != `[{"message":"pq: duplicate key value violates unique constraint \"auths_email_key\"","path":["CreateUser"]}]` {
+		if err.Error() != `[{"message":"ERROR: duplicate key value violates unique constraint \"auths_email_key\" (SQLSTATE 23505)","path":["CreateUser"]}]` {
 			t.Error()
 		}
 

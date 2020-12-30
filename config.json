@@ -12,6 +12,8 @@
   "database": {
     "user": "postgres",
     "pass": "postgres",
-    "name": "postgres"
+    "name": "postgres",
+    "host": "localhost",
+    "port": "5432"
   }
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/betopompolo/project_playlist_server/data"
 	"github.com/betopompolo/project_playlist_server/domain"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type postgresMusicRepository struct {

@@ -5,7 +5,7 @@ import (
 	"github.com/betopompolo/project_playlist_server/domain"
 	"github.com/betopompolo/project_playlist_server/infra"
 	"github.com/betopompolo/project_playlist_server/presentation/rest"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type registry struct {
