@@ -9,7 +9,7 @@ import (
 	"github.com/betopompolo/project_playlist_server/domain"
 	gqlerrors "github.com/betopompolo/project_playlist_server/presentation/gql-errors"
 	"github.com/betopompolo/project_playlist_server/presentation/models"
-	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 

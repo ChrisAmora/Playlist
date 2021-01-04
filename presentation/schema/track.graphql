@@ -2,14 +2,14 @@ type Track {
   id: ID!
   CreatedAt: Time!
   UpdatedAt: Time!
-  PlayListID: String!
+  PlayListID: Int!
   Title: String!
   Album: String!
   Artist: String!
 }
 
 input TrackInput {
-  PlayListID: String!
+  PlayListID: Int!
   Title: String!
   Album: String!
   Artist: String!

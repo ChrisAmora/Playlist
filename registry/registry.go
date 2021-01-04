@@ -17,6 +17,7 @@ type Registry interface {
 	NewAppController() rest.AppController
 	NewMusicUseCase() domain.MusicUsecase
 	NewAuthUseCase() domain.AuthUsecase
+	NewTrackUsecase() domain.TrackUsecase
 }
 
 func NewRegistry(db *gorm.DB, jwtSecret string) Registry {
@@ -37,6 +38,10 @@ func (r *registry) NewMusicRepository() data.MusicRepository {
 	return infra.NewPostgresMusicRepository(r.db)
 }
 
+func (r *registry) NewTrackRepository() data.TrackRepository {
+	return infra.NewPostgresTrackRepository(r.db)
+}
+
 func (r *registry) NewAuthRepository() data.AuthRepository {
 	return infra.NewPostgresAuthRepository(r.db)
 }
@@ -51,4 +56,8 @@ func (r *registry) NewMusicUseCase() domain.MusicUsecase {
 
 func (r *registry) NewAuthUseCase() domain.AuthUsecase {
 	return data.NewAuthUsecase(r.NewAuthRepository(), r.NewAJWTRepository())
+}
+
+func (r *registry) NewTrackUsecase() domain.TrackUsecase {
+	return data.NewTrackUsecase(r.NewTrackRepository())
 }

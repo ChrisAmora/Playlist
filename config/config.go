@@ -115,6 +115,7 @@ func (a *App) InitializeGraphql() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &interfaces.Resolver{
 		MusicUsecase: r.NewMusicUseCase(),
 		UserUsecase:  r.NewAuthUseCase(),
+		TrackUsecase: r.NewTrackUsecase(),
 	}}))
 	a.Server = srv
 }

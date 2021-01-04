@@ -18,6 +18,23 @@ type Music struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+type Track struct {
+	ID         string    `json:"id"`
+	CreatedAt  time.Time `json:"CreatedAt"`
+	UpdatedAt  time.Time `json:"UpdatedAt"`
+	PlayListID int       `json:"PlayListID"`
+	Title      string    `json:"Title"`
+	Album      string    `json:"Album"`
+	Artist     string    `json:"Artist"`
+}
+
+type TrackInput struct {
+	PlayListID int    `json:"PlayListID"`
+	Title      string `json:"Title"`
+	Album      string `json:"Album"`
+	Artist     string `json:"Artist"`
+}
+
 type User struct {
 	Email string `json:"email"`
 }
