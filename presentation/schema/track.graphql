@@ -1,0 +1,20 @@
+type Track {
+  id: ID!
+  CreatedAt: Time!
+  UpdatedAt: Time!
+  PlayListID: String!
+  Title: String!
+  Album: String!
+  Artist: String!
+}
+
+input TrackInput {
+  PlayListID: String!
+  Title: String!
+  Album: String!
+  Artist: String!
+}
+
+extend type Mutation {
+  CreateTrack(input: TrackInput!): Track
+}

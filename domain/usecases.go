@@ -10,6 +10,10 @@ type MusicUsecase interface {
 	GetAllMusics(c context.Context) ([]Music, error)
 }
 
+type TrackUsecase interface {
+	SaveTrack(c context.Context, playListID int, title, album, artist string) (Track, error)
+}
+
 type AuthUsecase interface {
 	Signup(c context.Context, email, password string) (User, error)
 	Login(c context.Context, email, password string) (Auth, error)

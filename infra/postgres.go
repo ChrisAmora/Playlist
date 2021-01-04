@@ -18,12 +18,30 @@ type postgresAuthRepository struct {
 	Conn *gorm.DB
 }
 
+type postgresTrackRepository struct {
+	Conn *gorm.DB
+}
+
 func NewPostgresMusicRepository(Conn *gorm.DB) data.MusicRepository {
 	return &postgresMusicRepository{Conn}
 }
 
 func NewPostgresAuthRepository(Conn *gorm.DB) data.AuthRepository {
 	return &postgresAuthRepository{Conn}
+}
+
+func NewPostgresTrackRepository(Conn *gorm.DB) data.TrackRepository {
+	return &postgresTrackRepository{Conn}
+}
+
+func (tr *postgresTrackRepository) SaveTrack(c context.Context, playListID int, title, album, artist string) (*data.Track, error) {
+	track := &data.Track{}
+	track.Album = album
+	track.Artist = artist
+	track.Title = title
+	track.PlayListID = uint(playListID)
+	result := tr.Conn.Create(track)
+	return track, result.Error
 }
 
 func (ar *postgresAuthRepository) GetUser(c context.Context, email string) (data.Auth, error) {

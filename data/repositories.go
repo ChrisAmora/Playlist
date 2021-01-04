@@ -19,6 +19,10 @@ type AuthRepository interface {
 	CreateUser(c context.Context, email, password string) (*Auth, error)
 }
 
+type TrackRepository interface {
+	SaveTrack(c context.Context, playListID int, title, album, artist string) (*Track, error)
+}
+
 type JWTRepository interface {
 	Sign(c context.Context, username string) (string, error)
 	Verify(c context.Context, token string) (*Claims, error)
@@ -38,6 +42,10 @@ type musicUsecase struct {
 	MusicRepository
 }
 
+type trackUsecase struct {
+	TrackRepository
+}
+
 func NewMusicUsecase(mr MusicRepository) domain.MusicUsecase {
 	return &musicUsecase{
 		MusicRepository: mr,
@@ -49,6 +57,28 @@ func NewAuthUsecase(ar AuthRepository, jr JWTRepository) domain.AuthUsecase {
 		AuthRepository: ar,
 		JWTRepository:  jr,
 	}
+}
+
+func NewTrackUsecase(tr TrackRepository) domain.TrackUsecase {
+	return &trackUsecase{
+		TrackRepository: tr,
+	}
+}
+
+func (tu *trackUsecase) SaveTrack(c context.Context, playListID int, title, album, artist string) (domain.Track, error) {
+	track, err := tu.TrackRepository.SaveTrack(c, playListID, title, album, artist)
+	domainTrack := &domain.Track{}
+	if err != nil {
+		return *domainTrack, err
+	}
+	domainTrack.Album = track.Album
+	domainTrack.Artist = track.Artist
+	domainTrack.CreatedAt = track.CreatedAt
+	domainTrack.DeletedAt = track.DeletedAt.Time
+	domainTrack.PlayListID = track.PlayListID
+	domainTrack.Title = track.Title
+	domainTrack.UpdatedAt = track.UpdatedAt
+	return *domainTrack, err
 }
 
 func (au *authUsecase) Signup(c context.Context, email, password string) (domain.User, error) {
