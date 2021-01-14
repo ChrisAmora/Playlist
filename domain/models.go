@@ -21,6 +21,11 @@ type User struct {
 	Email string
 }
 
+type UserTokens struct {
+	AccessToken  string
+	RefreshToken string
+}
+
 type Track struct {
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

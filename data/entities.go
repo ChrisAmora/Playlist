@@ -33,3 +33,8 @@ type Track struct {
 	Album      string       `gorm:"primaryKey"`
 	Artist     string       `gorm:"primaryKey"`
 }
+
+type Tokens struct {
+	AccessToken  string
+	RefreshToken string
+}

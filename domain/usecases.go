@@ -18,3 +18,7 @@ type AuthUsecase interface {
 	Signup(c context.Context, email, password string) (User, error)
 	Login(c context.Context, email, password string) (Auth, error)
 }
+
+type ProviderUsecase interface {
+	GetTokens(c context.Context, authorizationCode string) (UserTokens, error)
+}

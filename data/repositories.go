@@ -23,6 +23,10 @@ type TrackRepository interface {
 	SaveTrack(c context.Context, playListID int, title, album, artist string) (*Track, error)
 }
 
+type ProviderRepository interface {
+	GetTokensData(c context.Context, authorizationCode string) (Tokens, error)
+}
+
 type JWTRepository interface {
 	Sign(c context.Context, username string) (string, error)
 	Verify(c context.Context, token string) (*Claims, error)
@@ -46,6 +50,10 @@ type trackUsecase struct {
 	TrackRepository
 }
 
+type providerUsecase struct {
+	ProviderRepository
+}
+
 func NewMusicUsecase(mr MusicRepository) domain.MusicUsecase {
 	return &musicUsecase{
 		MusicRepository: mr,
@@ -63,6 +71,21 @@ func NewTrackUsecase(tr TrackRepository) domain.TrackUsecase {
 	return &trackUsecase{
 		TrackRepository: tr,
 	}
+}
+
+func NewProviderUsecase(pr ProviderRepository) domain.ProviderUsecase {
+	return &providerUsecase{}
+}
+
+func (pu *providerUsecase) GetTokens(c context.Context, authorizationCode string) (domain.UserTokens, error) {
+	userTokens := &domain.UserTokens{}
+	tokens, err := pu.ProviderRepository.GetTokensData(c, authorizationCode)
+	if err != nil {
+		return *userTokens, err
+	}
+	userTokens.AccessToken = tokens.AccessToken
+	userTokens.RefreshToken = tokens.RefreshToken
+	return *userTokens, err
 }
 
 func (tu *trackUsecase) SaveTrack(c context.Context, playListID int, title, album, artist string) (domain.Track, error) {
